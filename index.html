@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring Kandang Ayam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 10px;
+            /* Reduce padding */
+            margin: 0;
+        }
+
+        .container {
+            max-width: none;
+            /* Remove max-width constraint */
+            width: 100%;
+            margin: 0;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 100vh;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-radius: 15px;
+            padding: 25px 40px;
+            /* Increase horizontal padding */
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            /* Increase gap */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .mascot {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f39c12;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: #bdc3c7;
+        }
+
+        .header-subtitle .highlight {
+            color: #3498db;
+        }
+
+        .time-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+
+        /* Stats Cards */
+        .stats-section {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            /* Increase gap */
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #4a5f7a 0%, #3d4f66 100%);
+            border-radius: 12px;
+            padding: 25px;
+            /* Increase padding */
+            text-align: center;
+            border: 2px solid #5a6c7d;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            color: #e74c3c;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            color: #9b59b6;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #bdc3c7;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+
+        /* Bottom Cards */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            /* Increase gap */
+            flex: 1;
+        }
+
+        .info-card {
+            border-radius: 12px;
+            padding: 25px;
+            /* Increase padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .light-card {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .altitude-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border: 2px solid #4a5f7a;
+        }
+
+        .temperature-card {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            text-align: center;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-icon {
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .card-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .temperature-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .temperature-status {
+            background: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .temperature-recommendation {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Right Panel */
+        .chart-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-radius: 15px;
+            padding: 25px;
+            /* Increase padding */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            flex: 1;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-temp {
+            background: #f39c12;
+        }
+
+        .legend-humidity {
+            background: #3498db;
+        }
+
+        .legend-pressure {
+            background: #e74c3c;
+        }
+
+        .chart-area {
+            height: 200px;
+            background: linear-gradient(135deg, #4a5f7a 0%, #3d4f66 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: #f39c12;
+            transform: translateY(-50%);
+        }
+
+        .control-panel {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-radius: 15px;
+            padding: 25px;
+            /* Increase padding */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .control-item:hover {
+            transform: translateX(5px);
+        }
+
+        .control-fan {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .control-pump {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .control-feed {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .control-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-icon {
+            font-size: 20px;
+        }
+
+        .control-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .control-details p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .control-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .time-display {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <!-- Header -->
+            <div class="header">
+                <div class="mascot">🐓</div>
+                <div class="header-content">
+                    <h1 class="header-title">DASHBOARD MONITORING KANDANG AYAM</h1>
+                    <p class="header-subtitle">Selamat Datang! <span class="highlight">Ayam Sehat, Telurpun
+                            Lezat!</span></p>
+                </div>
+                <div class="time-display" id="current-time">13:41:30</div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <h2 class="stats-title">Kandangku</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">🐔</span>
+                        <div class="stat-label">Jumlah Ayam</div>
+                        <div class="stat-value">3200 ekor</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🌾</span>
+                        <div class="stat-label">Jumlah Pakan</div>
+                        <div class="stat-value">510 Kg</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">💧</span>
+                        <div class="stat-label">Air Minum</div>
+                        <div class="stat-value">180 L</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Cards -->
+            <div class="bottom-section">
+                <div class="info-card light-card">
+                    <div class="card-header">
+                        <span class="card-icon">💡</span>
+                        <div>
+                            <div class="card-title">Intensitas Cahaya</div>
+                            <div class="card-status">Status Lampu: MENYALA ⚙</div>
+                        </div>
+                    </div>
+                    <div class="card-value">48699 Lux</div>
+                </div>
+
+                <div class="info-card altitude-card">
+                    <div class="card-header">
+                        <span class="card-icon">🏔</span>
+                        <div>
+                            <div class="card-title">Ketinggian Lokasi</div>
+                            <div class="card-status">Dari permukaan laut</div>
+                        </div>
+                    </div>
+                    <div class="card-value">452.8 mdpl</div>
+                </div>
+
+                <div class="info-card temperature-card">
+                    <div class="card-header">
+                        <span class="card-icon">🌡</span>
+                        <div class="card-title">Suhu Kandang</div>
+                    </div>
+                    <div class="temperature-status">Status: IDEAL</div>
+                    <div class="temperature-value">27.6°C</div>
+                    <div class="temperature-recommendation">Rekomendasi: 24-30°C untuk ayam petelur</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <!-- Chart -->
+            <div class="chart-card">
+                <h3 class="chart-title">📊 Grafik Suhu & Kelembapan</h3>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-temp"></div>
+                        <span>Suhu (°C)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-humidity"></div>
+                        <span>Kelembapan (%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-pressure"></div>
+                        <span>Tekanan (hPa)</span>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-line"></div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h3 class="control-title">Kontrol Peralatan</h3>
+
+                <div class="control-item control-fan">
+                    <div class="control-info">
+                        <span class="control-icon">🌀</span>
+                        <div class="control-details">
+                            <h4>Kipas</h4>
+                            <p>Status: 🔴 Mati</p>
+                        </div>
+                    </div>
+                    <button class="control-button">🔴 Nyalakan</button>
+                </div>
+
+                <div class="control-item control-pump">
+                    <div class="control-info">
+                        <span class="control-icon">💧</span>
+                        <div class="control-details">
+                            <h4>Pompa</h4>
+                            <p>Status: 🔴 Mati</p>
+                        </div>
+                    </div>
+                    <button class="control-button">🔴 Nyalakan</button>
+                </div>
+
+                <div class="control-item control-feed">
+                    <div class="control-info">
+                        <span class="control-icon">🌾</span>
+                        <div class="control-details">
+                            <h4>Pakan</h4>
+                            <p>Status: 🔴 Mati</p>
+                        </div>
+                    </div>
+                    <button class="control-button">🔴 Nyalakan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update time every second
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Add click functionality to control buttons
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const isOn = this.textContent.includes('Matikan');
+                if (isOn) {
+                    this.textContent = '🔴 Nyalakan';
+                    this.previousElementSibling.querySelector('p').textContent = 'Status: 🔴 Mati';
+                } else {
+                    this.textContent = '🟢 Matikan';
+                    this.previousElementSibling.querySelector('p').textContent = 'Status: 🟢 Hidup';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
